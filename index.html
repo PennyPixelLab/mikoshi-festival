@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>神輿バランス！夏祭り</title>
+<style>
+:root{--bg:#fff7e7;--ink:#34251e;--red:#d74732;--gold:#d89b32;--card:#fff;--line:#ead6b8}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Hiragino Sans","Yu Gothic",sans-serif;background:var(--bg);color:var(--ink)}
+main{max-width:760px;margin:auto;padding:18px 14px 36px}
+h1{font-size:24px;margin:0}.sub{font-size:13px;opacity:.7;margin-top:4px}
+.top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+button{font:inherit;touch-action:manipulation}.primary{border:0;border-radius:14px;padding:13px 20px;background:var(--red);color:#fff;font-weight:800;min-height:48px}
+.stages,.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.stage,.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;text-align:center;padding:9px 5px;font-size:13px}
+.stage.active{border:2px solid var(--red);font-weight:800}.stage.locked{opacity:.45}
+.stat b{display:block;font-size:18px}
+#game{height:400px;position:relative;overflow:hidden;border-radius:20px;border:2px solid #e6c99c;background:linear-gradient(#111a3a 0%,#334879 59%,#73553d 60%,#45382c 100%);outline:none}
+.lanterns{position:absolute;top:10px;left:0;right:0;text-align:center;font-size:25px}.badge{position:absolute;top:49px;left:0;right:0;text-align:center;color:#fff;font-size:12px;letter-spacing:.22em}
+#warning,#call{position:absolute;left:0;right:0;text-align:center;color:#fff;font-weight:900;opacity:0;z-index:5;transition:.15s}
+#warning{top:75px;font-size:23px}#call{top:105px;font-size:25px}
+#wind{position:absolute;top:135px;color:#fff;font-size:38px;font-weight:900;opacity:0;z-index:5;white-space:nowrap}
+#mikoshi{position:absolute;left:50%;bottom:98px;width:290px;text-align:center;transform:translateX(-50%);transform-origin:center bottom}
+.spark{font-size:38px;line-height:1}.shrine{font-size:62px;line-height:1}.gold{height:19px;width:140px;background:#c49338;margin:-5px auto 0;border-radius:5px}.pole{height:12px;width:100%;background:#704326;border-radius:10px}.hands,.people{display:flex;justify-content:space-around}.hands{font-size:38px;margin-top:-4px}.people{font-size:29px}
+.crowd{position:absolute;bottom:45px;left:0;right:0;text-align:center;font-size:24px}
+#overlay{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.12)}
+#overlay.hidden{display:none}.modal{max-width:85%;background:rgba(24,18,18,.83);color:#fff;padding:18px 22px;border-radius:16px;text-align:center;font-weight:800}.modal small{font-weight:400}.modal button{margin-top:12px;border:0;border-radius:12px;padding:12px 16px;font-weight:800}
+#fx{position:absolute;inset:0;pointer-events:none;text-align:center;padding-top:50px;font-size:45px;z-index:9}
+.balance-label{display:flex;justify-content:space-between;font-size:12px;opacity:.7;margin-top:10px}.track{height:15px;border:1px solid var(--line);background:#fff;border-radius:20px;position:relative;overflow:hidden}.safe{position:absolute;left:36%;right:36%;height:100%;background:#dff1d8}.bar{position:absolute;width:12px;height:100%;background:var(--red);border-radius:20px;left:calc(50% - 6px)}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.control{min-height:65px;border:1px solid var(--line);border-radius:16px;background:#fff;font-size:20px;font-weight:900;color:var(--ink)}
+.help{text-align:center;font-size:12px;opacity:.65;margin-top:9px}
+@media(max-width:420px){main{padding:12px 10px 28px}#game{height:370px}#mikoshi{width:260px}.shrine{font-size:55px}.controls .control{min-height:62px}}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><div><h1 id="title">STAGE 1　🏮 夏祭り</h1><div id="desc" class="sub">横風に気をつけて神輿を担ごう！</div></div><button id="start" class="primary">祭り開始！</button></div>
+<div class="stages"><div id="s1" class="stage active">1<br>夏祭り</div><div id="s2" class="stage locked">2<br>夜祭り 🔒</div><div id="s3" class="stage locked">3<br>大祭 🔒</div></div>
+<div class="stats"><div class="stat">残り<b><span id="time">45</span>秒</b></div><div class="stat">距離<b><span id="distance">0</span>m</b></div><div class="stat">祭りPt<b id="score">0</b></div></div>
+<div id="game" tabindex="0">
+<div class="lanterns">🏮　🏮　🏮　🏮　🏮</div><div id="badge" class="badge">STAGE 1</div>
+<div id="warning">🍃 風が来る！</div><div id="call">ワッショイ！</div><div id="wind">💨 ピューッ！</div>
+<div id="mikoshi"><div class="spark">✨</div><div class="shrine">⛩️</div><div class="gold"></div><div class="pole"></div><div class="hands"><span>🙌</span><span>🙌</span><span>🙌</span><span>🙌</span></div><div class="people"><span>👘</span><span>👘</span><span>👘</span><span>👘</span></div></div>
+<div class="crowd">👘　🏮　🥁　🏮　👘</div><div id="fx"></div>
+<div id="overlay"><div class="modal">🏮 STAGE 1<br><small>祭り開始！を押してスタート</small></div></div>
+</div>
+<div class="balance-label"><span>← 左</span><span>バランス</span><span>右 →</span></div><div class="track"><div class="safe"></div><div id="bar" class="bar"></div></div>
+<div class="controls"><button id="left" class="control">← 左へ！</button><button id="right" class="control">右へ！ →</button></div>
+<div class="help">スマホ：左右ボタン長押し ／ PC：← → キー　🔊 太鼓・風・「わっしょい！」つき</div>
+</main>
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+let stage=1,running=false,tilt=0,v=0,t=45,dist=0,score=0,total=0,last=0,raf=0,L=false,R=false,windWait=6,windMode=0,windTimer=0,windDir=1,beat=.5,jitter=.8,audio=null;
+const cfg={
+1:{name:"🏮 夏祭り",desc:"横風に気をつけて神輿を担ごう！",time:45,limit:34,control:20,gravity:.42,random:3.2,windMin:6,windRange:6,windPower:5.4},
+2:{name:"🌙 夜祭り",desc:"風の間隔が短くなる。落ち着いて立て直せ！",time:50,limit:32,control:20,gravity:.5,random:3.8,windMin:4,windRange:4,windPower:6.7},
+3:{name:"🔥 大祭",desc:"強風が連続！最後まで神輿を守り抜け！",time:55,limit:30,control:20,gravity:.58,random:4.4,windMin:2.8,windRange:3,windPower:7.6}
+};
+function AC(){if(!audio){const A=window.AudioContext||window.webkitAudioContext;if(A)audio=new A()}if(audio&&audio.state==="suspended")audio.resume();return audio}
+function drum(){const a=AC();if(!a)return;const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(115,a.currentTime);o.frequency.exponentialRampToValueAtTime(48,a.currentTime+.18);g.gain.setValueAtTime(.28,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.25);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.27)}
+function voice(txt="わっしょい！"){try{if(!("speechSynthesis" in window))return;const u=new SpeechSynthesisUtterance(txt);u.lang="ja-JP";u.rate=1.35;u.pitch=.75;u.volume=.7;speechSynthesis.speak(u)}catch(e){}}
+function shout(){const c=$("#call");c.style.opacity=1;c.style.transform="scale(1.13)";drum();voice();setTimeout(()=>{c.style.opacity=0;c.style.transform="scale(1)"},380)}
+function windSound(){const a=AC();if(!a)return;const o=a.createOscillator(),g=a.createGain();o.type="sine";o.frequency.setValueAtTime(430,a.currentTime);o.frequency.exponentialRampToValueAtTime(1100,a.currentTime+.35);o.frequency.exponentialRampToValueAtTime(380,a.currentTime+.8);g.gain.setValueAtTime(.001,a.currentTime);g.gain.linearRampToValueAtTime(.07,a.currentTime+.12);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.85);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.9)}
+function updateHeader(){const c=cfg[stage];$("#title").textContent=`STAGE ${stage}　${c.name}`;$("#desc").textContent=c.desc;$("#badge").textContent=`STAGE ${stage}`;for(let i=1;i<=3;i++){const e=$("#s"+i);e.className="stage"+(i===stage?" active":i>stage?" locked":"");e.innerHTML=`${i<stage?"✓ ":""}${i}<br>${i===1?"夏祭り":i===2?"夜祭り":"大祭"}${i>stage?" 🔒":""}`}$("#game").style.background=stage===1?"linear-gradient(#111a3a 0%,#334879 59%,#73553d 60%,#45382c 100%)":stage===2?"linear-gradient(#090d26 0%,#18244e 59%,#60422f 60%,#382d28 100%)":"linear-gradient(#16091e 0%,#421c3b 59%,#6d392b 60%,#38251f 100%)"}
+function render(){const c=cfg[stage];$("#mikoshi").style.transform=`translateX(-50%) rotate(${tilt}deg)`;$("#bar").style.left=`calc(${Math.max(1,Math.min(99,50+tilt/c.limit*50))}% - 6px)`;$("#time").textContent=Math.max(0,Math.ceil(t));$("#distance").textContent=Math.floor(dist);$("#score").textContent=Math.floor(total+score)}
+function scheduleWind(){const c=cfg[stage];windWait=c.windMin+Math.random()*c.windRange}
+function start(){cancelAnimationFrame(raf);AC();const c=cfg[stage];tilt=v=dist=score=0;t=c.time;windMode=0;beat=.4;jitter=.8;scheduleWind();running=true;last=performance.now();$("#overlay").classList.add("hidden");$("#warning").style.opacity=0;$("#wind").style.opacity=0;$("#fx").innerHTML="";$("#start").textContent="やり直す";shout();raf=requestAnimationFrame(loop)}
+function warn(){windMode=1;windTimer=stage===3?.8:1.1;windDir=Math.random()<.5?-1:1;const w=$("#warning");w.textContent=windDir>0?"🍃 左から風！ →":"← 🍃 右から風！";w.style.opacity=1}
+function hit(){windMode=2;windTimer=.8;$("#warning").style.opacity=0;const w=$("#wind");w.textContent=windDir>0?"💨 ピューッ！ →":"← ピューッ！ 💨";w.style.left=windDir>0?"3%":"auto";w.style.right=windDir<0?"3%":"auto";w.style.opacity=1;windSound();v+=windDir*(cfg[stage].windPower+Math.random()*1.5)}
+function clearStage(){running=false;cancelAnimationFrame(raf);total+=Math.floor(score);const o=$("#overlay");o.classList.remove("hidden");const m=o.querySelector(".modal");if(stage<3){m.innerHTML=`🎆 STAGE ${stage} CLEAR！<br><small>祭りPt ${Math.floor(total)}<br>次はもっと激しい祭りだ！</small><br><button id="next">STAGE ${stage+1}へ →</button>`;$("#next").addEventListener("click",()=>{stage++;updateHeader();t=cfg[stage].time;tilt=0;render();m.innerHTML=`${cfg[stage].name}<br><small>${cfg[stage].desc}<br>「STAGE ${stage} 開始！」を押そう</small>`;$("#start").textContent=`STAGE ${stage} 開始！`})}else{voice("わっしょーい！");$("#fx").innerHTML="🎆　✨　🎇　✨　🎆";m.innerHTML=`🏆 祭 COMPLETED 🏆<br><span style="font-size:25px">🎆 わっしょーい！！ 🎆</span><br><small>全3ステージ完全制覇！<br>最終スコア ${Math.floor(total)}</small><br><button id="again">最初から遊ぶ</button>`;$("#again").addEventListener("click",()=>{stage=1;total=0;updateHeader();t=cfg[1].time;tilt=0;render();$("#fx").innerHTML="";m.innerHTML="🏮 STAGE 1<br><small>祭り開始！を押してスタート</small>";$("#start").textContent="祭り開始！"})}}
+function fail(){running=false;cancelAnimationFrame(raf);drum();const o=$("#overlay");o.classList.remove("hidden");o.querySelector(".modal").innerHTML=`💥 神輿が落ちた！<br><small>STAGE ${stage}・${Math.floor(dist)}m<br>同じステージから再挑戦！</small>`;$("#start").textContent="もう一度！"}
+function loop(now){if(!running)return;const dt=Math.min(.04,(now-last)/1000);last=now;const c=cfg[stage];t-=dt;beat-=dt;jitter-=dt;windWait-=dt;if(beat<=0){shout();beat=stage===3?1.25:stage===2?1.5:1.75}if(jitter<=0&&windMode===0){v+=(Math.random()-.5)*c.random;jitter=.5+Math.random()*.8}if(windWait<=0&&windMode===0)warn();if(windMode){windTimer-=dt;if(windMode===1&&windTimer<=0)hit();else if(windMode===2&&windTimer<=0){windMode=0;$("#wind").style.opacity=0;scheduleWind()}}if(L)v-=c.control*dt;if(R)v+=c.control*dt;v+=tilt*c.gravity*dt;v*=Math.pow(.972,dt*60);tilt+=v*dt*3.3;$("#mikoshi").style.bottom=(98+Math.sin((c.time-t)*7)*3)+"px";dist+=dt*1.8;score+=dt*(30+Math.max(0,c.limit-Math.abs(tilt))*2);render();if(Math.abs(tilt)>=c.limit){fail();return}if(t<=0){clearStage();return}raf=requestAnimationFrame(loop)}
+function press(d,on){if(d==="L")L=on;else R=on}
+$("#start").addEventListener("click",start);
+[["#left","L"],["#right","R"]].forEach(([id,d])=>{const b=$(id);b.addEventListener("pointerdown",e=>{e.preventDefault();press(d,true)});["pointerup","pointercancel","pointerleave"].forEach(ev=>b.addEventListener(ev,()=>press(d,false)))});
+$("#game").addEventListener("keydown",e=>{if(e.key==="ArrowLeft"){e.preventDefault();L=true}if(e.key==="ArrowRight"){e.preventDefault();R=true}});
+$("#game").addEventListener("keyup",e=>{if(e.key==="ArrowLeft")L=false;if(e.key==="ArrowRight")R=false});
+updateHeader();render();
+})();
+</script>
+</body>
+</html>
